@@ -3,11 +3,24 @@ var config = require('./config.js');
 var moment = require('moment');
 var sleep = require('system-sleep');
 var messageFactory = require('./messageFactory.js');
+var log4js = require('log4js');
 
+
+// configuring logging
+log4js.loadAppender('console');
+log4js.loadAppender('file');
+log4js.addAppender(log4js.appenders.file('logs/producer.log'), 'producer');
+ 
+var logger = log4js.getLogger('producer');
+logger.setLevel('INFO');
+
+logger.info('--------------------------------------------');
+logger.info('Starting Producer Session');
 stompit.connect(config.connectionOptions, function(error, client) {
 
+  logger.info('Starting...');
   if (error)
-    return console.log('connect error ' + error.message);
+    return logger.error('connect error ' + error.message);
 
   var sendHeaders = {
     'destination': '/queue/test',
@@ -22,39 +35,29 @@ stompit.connect(config.connectionOptions, function(error, client) {
   var startTime = moment();
   var elapsedTime = (moment() - startTime)/1000; // elapsed time in seconds
 
-  // initialize the message factory
-  messageFactory.init();
 
-  //while(elapsedTime < duration) {
-    setTimeout(produce, waitTime, startTime, elapsedTime, duration, client, sendHeaders, messagesCount, waitTime);
-    //sleep(waitTime);
-
-
-  //}
+  while(elapsedTime < duration) {
+    var messageObj = messageFactory.createMessage();
+    var message = JSON.stringify(messageObj);
+    var frame = client.send(sendHeaders);
+    frame.write(message);
+    frame.end();
+    messagesCount++;
+    logger.info('Message #' + messagesCount + ' produced, mesasge id: ' + messageObj.message_id)
+    // updating elapsed time
+    elapsedTime = (moment() - startTime)/1000;
+    sleep(waitTime);
+  }
 
   var messageFrequency = messagesCount / elapsedTime;
-  console.log(messagesCount + " messages were sent in " + elapsedTime + " sec, frequency = " + messageFrequency + " message per second.");
+  console.log(messagesCount + " messages were sent in " + elapsedTime + " sec, actual production rate = " + messageFrequency + " message per second.");
 
   client.disconnect();
 });
 
-function produce(startTime, elapsedTime, duration, client, sendHeaders, messagesCount, waitTime) {
-  if(elapsedTime >= duration) {
-    return;
-  }
-  message = JSON.stringify(messageFactory.createMessage());
-  var frame = client.send(sendHeaders);
-  frame.write(message);
-  frame.end();
-  messagesCount++;
-  // updating elapsed time
-  elapsedTime = (moment() - startTime)/1000;
-  setTimeout(produce, waitTime, startTime, elapsedTime, duration, client, sendHeaders, messagesCount, waitTime); // recursively call and chain another message production after the specified wait time
-}
-
 function displayConfigurations() {
-  console.log('-----------------------------------------------');
-  console.log('Runtime duration: ' + config.duration);
-  console.log('Message production rate: ' + config.productionRate);
-  console.log('-----------------------------------------------');
+  logger.info('Runtime duration: ' + config.duration);
+  logger.info('Message production rate: ' + config.productionRate);
+  logger.info('A message every ' + (1000/config.productionRate) + ' ms');
+  
 }

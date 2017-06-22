@@ -3,14 +3,20 @@ var config = require('./config.js');
 var consume = require('./consume.js');
 
 
-//while (true) {
-  for (var i = 0; i < 100; i++) {
-    consume('test', config.connectionOptions, function (error, data) {
-      if (error) {
-        return console.error(error);
-      }
-      console.log('>>> ' + data);
-    });
-  }
-  //sleep(1);
-//}
+var waitTimeBetweenReads = 1000/config.consumptionRate;
+
+ConsumeWorker();
+
+function ConsumeWorker() {
+  consume('test', config.connectionOptions, function (error, data) {
+    if (error) {
+      console.error(error);
+    } else {
+      messageObj = JSON.parse(data);
+      console.log('message consumed - message id: ' + messageObj.message_id);
+
+      // writing to redis
+    }
+    ConsumeWorker();
+  });
+}

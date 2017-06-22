@@ -16,8 +16,8 @@ config.logDir = "log/";
 config.logLevel = "ERROR";
 
 //
-config.duration = 30; // seconds
-config.productionRate = 250; // message per second
+config.duration = 10; // seconds
+config.productionRate = 2000; // message per second
 config.consumptionRate = 250; // message per second
 
 

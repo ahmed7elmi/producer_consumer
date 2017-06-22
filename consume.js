@@ -1,12 +1,12 @@
-// Consumes one message  at a time
+// Consumer Worker
 
 var stompit = require('stompit');
 
-module.exports = function(queueName, connectionOptions, callback) {
+module.exports = function(queueName, connectionOptions, callback /* message/error handler */) {
   stompit.connect(connectionOptions, function(error, client) {
 
     if (error) {
-      return callback(error);
+      return callback('Connect Error: ' + error);
     }
 
     var subscribeHeaders = {
@@ -17,7 +17,7 @@ module.exports = function(queueName, connectionOptions, callback) {
     client.subscribe(subscribeHeaders, function(error, message) {
 
       if (error) {
-        return callback(error);
+        return callback('Subscribe Error: ' + error);
       }
 
       message.readString('utf-8', function(error, body) {

@@ -1,15 +1,14 @@
-module.exports = {
+const uuid = require('uuid/v4');
+var moment = require('moment');
 
-  init: function() {
-    console.log('--------- message factory initialized ---------');
-  },
+module.exports = {
 
   createMessage: function () {
     return {
       'account_id': 100,
       'account_name': 'xxx',
       'interface_id': 2,
-      'message_id': 'xx', // new guid everytime
+      'message_id': uuid(), // new guid everytime
       'source_addr': 'xxxxxx',
       'destination_addr': '9xxxxxx',
       'coding': 2,
@@ -24,7 +23,7 @@ module.exports = {
       'registered_delivery': 0,
       'dlr_ip': 'xx.xx.xxx.xx',
       'dlr_port': 201,
-      'sm_timestamp': '2017-01-25T20:24:30.469'
+      'sm_timestamp': moment() //'2017-01-25T20:24:30.469'
     };
   }
 };
