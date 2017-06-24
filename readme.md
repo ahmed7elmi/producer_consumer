@@ -7,3 +7,5 @@
 3. Try the idea of multiple consumers working in parallel and save messages in a shared repository before sending to redis?
 4. implement writing to redis
 5. refactor for clean code
+6. consumption is too slow
+7. maximum controlled rate was 731 msg/sec

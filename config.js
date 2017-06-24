@@ -16,9 +16,7 @@ config.logDir = "log/";
 config.logLevel = "ERROR";
 
 //
-config.duration = 10; // seconds
-config.productionRate = 2000; // message per second
-config.consumptionRate = 250; // message per second
-
+config.duration = 1; // seconds
+config.productionRate = 100; // message per second
 
 module.exports = config;
