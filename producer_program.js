@@ -1,5 +1,5 @@
 var stompit = require('stompit');
-var config = require('./config.js');
+var config = require('./producer_config.js');
 var moment = require('moment');
 var messageFactory = require('./messageFactory.js');
 var log4js = require('log4js');
@@ -22,7 +22,7 @@ stompit.connect(config.connectionOptions, function(error, client) {
     return logger.error('connect error ' + error.message);
 
   var sendHeaders = {
-    'destination': '/queue/test',
+    'destination': '/queue/' + config.queueName,
     'content-type': 'text/plain'
   };
 

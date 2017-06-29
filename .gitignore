@@ -3,3 +3,7 @@ node_modules/
 
 # log files
 *.log
+
+# temp and bak files
+_*.js
+*.backup.js

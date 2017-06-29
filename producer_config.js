@@ -16,7 +16,8 @@ config.logDir = "log/";
 config.logLevel = "ERROR";
 
 //
-config.duration = 1; // seconds
+config.queueName = 'test';
+config.duration = 30*60; // seconds
 config.productionRate = 100; // message per second
 
 module.exports = config;
