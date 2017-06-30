@@ -13,11 +13,11 @@ log4js.addAppender(log4js.appenders.file('logs/producer.log'), 'producer');
 var logger = log4js.getLogger('producer');
 logger.setLevel('INFO');
 
-logger.info('--------------------------------------------');
+logger.info('----------------------------------------------------------------------------------------');
 logger.info('Starting Producer Session');
 stompit.connect(config.connectionOptions, function(error, client) {
 
-  logger.info('Starting...');
+  logger.info('Producing messages at rate ' + config.productionRate + ' messages per second for a ' + config.duration + ' seconds (' + config.duration/60 + ' minutes)...' );
   if (error)
     return logger.error('connect error ' + error.message);
 
@@ -29,7 +29,6 @@ stompit.connect(config.connectionOptions, function(error, client) {
   var messagesCount = 0;
   var duration = config.duration;
   var waitTime = 1000/config.productionRate; // time to wait between messages
-  //displayConfigurations();
 
   var startTime = moment();
   var elapsedTime = (moment() - startTime)/1000; // elapsed time in seconds
@@ -41,28 +40,32 @@ stompit.connect(config.connectionOptions, function(error, client) {
     frame.write(message);
     frame.end();
     messagesCount++;
-    //logger.info('Message #' + messagesCount + ' produced, mesasge id: ' + messageObj.message_id)
     // updating elapsed time
-    //displayInfo(messagesCount )
     elapsedTime = (moment() - startTime)/1000;
   }, waitTime);
+
+  // console animations
+  var P = ["\\", "|", "/", "-"];
+  var x = 0;
+  var animIntervalObj = setInterval(function() {
+    process.stdout.write("\r" + P[x++]);
+    x = x % P.length;
+  }, 250);
   
 
   // schedueling the closure after the specified duration
   setTimeout(function() {
     // cancel the setInterval call
     clearInterval(intervalObj);
+    clearInterval(animIntervalObj);
 
     var messageFrequency = messagesCount / elapsedTime;
-    //console.log(messagesCount + " messages were sent in " + elapsedTime + " sec, actual production rate = " + messageFrequency + " message per second.");
     client.disconnect();
-    displayInfo(logger, messagesCount, elapsedTime, messageFrequency)
+    
+    process.stdout.write("\r");
+    logger.info('Done.');
+    logger.info(messagesCount + " messages were sent in " + elapsedTime + " sec");
+    logger.info("Actual production rate = " + messageFrequency + " messages per second.");
+    logger.info('----------------------------------------------------------------------------------------');
   }, duration*1000);
 });
-
-function displayInfo(logger, messagesCount, elapsedTime, messageFrequency) {
-  logger.info('Runtime duration: ' + config.duration + ' seconds \n');
-  logger.info('Planned message production rate: ' + config.productionRate + ' message per second (a message every ' + (1000/config.productionRate) + ' ms)');
-  logger.info('Total messages sent: ' + messagesCount);
-  logger.info(messagesCount + " messages were sent in " + elapsedTime + " sec, actual production rate = " + messageFrequency + " message per second.")
-}

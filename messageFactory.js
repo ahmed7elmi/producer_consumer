@@ -23,7 +23,7 @@ module.exports = {
       'registered_delivery': 0,
       'dlr_ip': 'xx.xx.xxx.xx',
       'dlr_port': 201,
-      'sm_timestamp': moment() //'2017-01-25T20:24:30.469'
+      'sm_timestamp': moment()
     };
   }
 };

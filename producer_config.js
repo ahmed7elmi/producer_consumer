@@ -11,13 +11,9 @@ config.connectionOptions = {
   }
 }
 
-// configs for log4js usage
-config.logDir = "log/";
-config.logLevel = "ERROR";
-
 //
 config.queueName = 'test';
-config.duration = 30*60; // seconds
-config.productionRate = 100; // message per second
+config.duration = 90*60; // seconds
+config.productionRate = 250; // message per second
 
 module.exports = config;
