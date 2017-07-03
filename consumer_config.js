@@ -11,6 +11,11 @@ config.connectionOptions = {
   }
 }
 
+config.redisConnectionOptions = {
+  'host': '127.0.0.1',
+  'port': 6379
+}
+
 // configs for log4js usage
 config.logDir = "log/";
 config.logLevel = "ERROR";

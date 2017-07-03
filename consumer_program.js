@@ -12,10 +12,6 @@ logger.setLevel('TRACE');
 
 //
 let totalConsumed = 0;
-let messagesBuffer = [];
-let messagesBufferSize = 0;
-let patchSize = 20;
-let patchesCounter = 1;
 
 stompit.connect(config.connectionOptions, (error, client) => {
   if (error) {

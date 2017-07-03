@@ -13,7 +13,7 @@ config.connectionOptions = {
 
 //
 config.queueName = 'test';
-config.duration = 90*60; // seconds
-config.productionRate = 250; // message per second
+config.duration = 10;//90*60; // seconds
+config.productionRate = 2; // message per second
 
 module.exports = config;

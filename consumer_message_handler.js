@@ -1,4 +1,6 @@
 var redis = require("redis");
+var config = require('./consumer_config.js');
+
 module.exports = {
     messagesBuffer: [],
     messagesBufferSize: 0,
@@ -9,9 +11,9 @@ module.exports = {
         this.messagesBufferSize++
         if(this.messagesBufferSize == this.patchSize) {
             // send to redis store
-            redisClient = redis.createClient();
+            redisClient = redis.createClient(config.redisConnectionOptions);
             redisClient.on("error", function (err) {
-                callback('Redis Error: ' + err);
+                return callback('Redis Error: ' + err);
             });
 
             // check if the key 'lastId' exist and get its value if exist
